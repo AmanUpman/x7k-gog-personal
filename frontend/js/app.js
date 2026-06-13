@@ -60,6 +60,7 @@ const els = {
   syncPaste: document.getElementById("sync-paste"),
   syncApply: document.getElementById("sync-apply"),
   authBtn: document.getElementById("auth-btn"),
+  homeBtn: document.getElementById("home-btn"),
   syncCloudPanel: document.getElementById("sync-cloud-panel"),
   syncManualPanel: document.getElementById("sync-manual-panel"),
   syncCloudUser: document.getElementById("sync-cloud-user"),
@@ -333,16 +334,26 @@ function updateAuthButton(user) {
   els.authBtn.hidden = false;
 
   if (user) {
+    els.syncOpen.hidden = true;
     els.authBtn.textContent = "Sign out";
     els.authBtn.classList.add("signed-in");
     els.authBtn.title = user.email || "Signed in";
   } else {
+    els.syncOpen.hidden = false;
     els.authBtn.textContent = "Sign in";
     els.authBtn.classList.remove("signed-in");
     els.authBtn.title = isCloudSyncConfigured()
       ? "Sign in with Google to sync across devices"
       : "Set up Google sync";
   }
+}
+
+function goHome() {
+  closeModal();
+  closeSyncModal();
+  els.search.value = "";
+  setView("all");
+  window.scrollTo({ top: 0, behavior: "smooth" });
 }
 
 async function startCloudSync() {
@@ -709,6 +720,7 @@ document.addEventListener("keydown", (event) => {
 
 els.syncOpen.addEventListener("click", openSyncModal);
 els.syncClose.addEventListener("click", closeSyncModal);
+els.homeBtn.addEventListener("click", goHome);
 els.authBtn.addEventListener("click", handleAuthClick);
 els.firebaseSave.addEventListener("click", handleFirebaseSave);
 els.firebaseSignin.addEventListener("click", handleFirebaseSignIn);
