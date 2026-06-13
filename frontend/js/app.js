@@ -21,7 +21,6 @@ import {
   signInWithGoogle,
   signOutUser,
   getCurrentUser,
-  isCloudSyncAvailable,
   notifyCloudPush,
   resetFirebaseSession,
 } from "./cloud-sync.js";
