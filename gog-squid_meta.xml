@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metadata>
+  <identifier>gog-squid</identifier>
+  <mediatype>data</mediatype>
+  <collection>opensource_media</collection>
+  <description>An entire scrape of the &lt;a href="https://gog.squid.wtf" rel="ugc nofollow"&gt;GOG Games Archive&lt;/a&gt;, with intent to make the links easier to preserve&lt;div&gt;&lt;br /&gt;For an entire scrape of the now defunct GOG Games public API (that includes .md5 files!), see &lt;a href="https://archive.org/details/gog-games-api" rel="ugc nofollow"&gt;archive.org/details/gog-games-api&lt;/a&gt;&lt;/div&gt;</description>
+  <scanner>Internet Archive HTML5 Uploader 1.7.0</scanner>
+  <subject>gog-games.to</subject>
+  <subject>gog.squid.wtf</subject>
+  <subject>GOG games</subject>
+  <title>gog.squid.wtf scrape</title>
+  <uploader>james@hulme.rocks</uploader>
+  <publicdate>2026-06-12 17:00:45</publicdate>
+  <addeddate>2026-06-12 17:00:45</addeddate>
+  <curation>[curator]validator@archive.org[/curator][date]20260612170106[/date][comment]checked for malware[/comment]</curation>
+</metadata>

@@ -1,0 +1,4 @@
+node_modules/
+.DS_Store
+Thumbs.db
+gog-squid_meta.sqlite

@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Browse GOG game download links from the gog.squid.wtf archive." />
+  <title>GOG</title>
+  <link rel="stylesheet" href="css/main.css" />
+</head>
+<body>
+  <header class="site-header">
+    <div class="header-top">
+      <div class="brand">
+        <div class="brand-icon" aria-hidden="true">GOG</div>
+        <div class="brand-text">
+          <h1>GOG</h1>
+          <p>gog.squid.wtf archive</p>
+        </div>
+      </div>
+
+      <div class="header-actions">
+        <nav class="view-nav" id="view-nav" aria-label="View">
+          <button class="view-tab active" type="button" data-view="all">Browse</button>
+          <button class="view-tab" type="button" data-view="favorites">Favorites (<span id="favorites-count">0</span>)</button>
+        </nav>
+        <button class="sync-btn" id="sync-open" type="button" title="Sync data across devices">Sync</button>
+        <button class="auth-btn" id="auth-btn" type="button" hidden>Sign in</button>
+        <span class="header-stats" id="stats">Loading…</span>
+      </div>
+    </div>
+
+    <div class="search-section">
+      <div class="search-wrap">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true">
+          <circle cx="11" cy="11" r="7"></circle>
+          <path d="M20 20L16.5 16.5"></path>
+        </svg>
+        <input
+          type="search"
+          id="search"
+          placeholder="Search by game, developer or publisher"
+          autocomplete="off"
+        />
+      </div>
+    </div>
+  </header>
+
+  <main class="app-main">
+    <div id="grid"></div>
+    <nav class="pagination" id="pagination" aria-label="Pagination"></nav>
+  </main>
+
+  <footer class="site-footer">
+    Data sourced from the <a href="https://gog.squid.wtf" target="_blank" rel="noopener noreferrer">GOG Games Archive</a>
+  </footer>
+
+  <div class="modal-overlay" id="modal" aria-hidden="true" role="dialog" aria-modal="true">
+    <div class="modal" id="modal-content"></div>
+  </div>
+
+  <div class="modal-overlay" id="sync-modal" aria-hidden="true" role="dialog" aria-modal="true">
+    <div class="modal sync-modal">
+      <div class="modal-header">
+        <div class="modal-title-wrap">
+          <h2 class="modal-title">Sync your data</h2>
+          <p class="modal-subtitle" id="sync-subtitle">Favorites and failed-link flags are saved in this browser.</p>
+        </div>
+        <button class="modal-close" id="sync-close" type="button" aria-label="Close">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="sync-cloud-panel" id="sync-cloud-panel" hidden>
+          <p class="sync-cloud-title">Signed in — your data syncs automatically</p>
+          <p class="sync-cloud-user" id="sync-cloud-user"></p>
+        </div>
+
+        <div class="sync-manual-panel" id="sync-manual-panel">
+          <p class="sync-status" id="sync-status"></p>
+
+        <div class="sync-actions">
+          <button class="sync-action-btn" id="sync-copy" type="button">Copy sync code</button>
+          <button class="sync-action-btn" id="sync-export" type="button">Download backup</button>
+          <label class="sync-action-btn sync-import-label">
+            Import backup
+            <input type="file" id="sync-import-file" accept="application/json,.json" hidden />
+          </label>
+        </div>
+
+        <label class="sync-label" for="sync-paste">Paste sync code from another device</label>
+        <textarea id="sync-paste" class="sync-textarea" rows="4" placeholder="Paste sync code here…"></textarea>
+        <button class="sync-apply-btn" id="sync-apply" type="button">Apply sync code</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>

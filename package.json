@@ -1,0 +1,11 @@
+{
+  "name": "gog-games-browser",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "node scripts/build-index.mjs",
+    "dev": "npm run build && npx --yes serve frontend -l 3000",
+    "start": "npm run dev",
+    "predeploy": "npm run build"
+  }
+}
