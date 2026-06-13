@@ -23,7 +23,13 @@ import {
   getCurrentUser,
   isCloudSyncAvailable,
   notifyCloudPush,
+  resetFirebaseSession,
 } from "./cloud-sync.js";
+import {
+  isCloudSyncConfigured,
+  parseFirebaseConfigInput,
+  saveFirebaseConfig,
+} from "./firebase-config.js";
 
 const PAGE_SIZE = 48;
 const DATA_URL = "data/games.json";
@@ -59,6 +65,10 @@ const els = {
   syncManualPanel: document.getElementById("sync-manual-panel"),
   syncCloudUser: document.getElementById("sync-cloud-user"),
   syncSubtitle: document.getElementById("sync-subtitle"),
+  syncSetupPanel: document.getElementById("sync-setup-panel"),
+  firebaseConfigInput: document.getElementById("firebase-config-input"),
+  firebaseSave: document.getElementById("firebase-save"),
+  firebaseSignin: document.getElementById("firebase-signin"),
 };
 
 function renderCover(game) {
@@ -275,11 +285,27 @@ function closeModal() {
   }
 }
 
+function updateSyncSetupUI() {
+  const configured = isCloudSyncConfigured();
+  const user = getCurrentUser();
+
+  if (user) {
+    els.syncSetupPanel.hidden = true;
+    return;
+  }
+
+  els.syncSetupPanel.hidden = false;
+  els.firebaseSave.hidden = configured;
+  els.firebaseSignin.hidden = !configured;
+}
+
 function refreshSyncStatus() {
   const meta = getSyncMeta();
   const favorites = getFavorites().size;
   const failed = getFailedLinks().size;
   const user = getCurrentUser();
+
+  updateSyncSetupUI();
 
   if (user) {
     els.syncCloudPanel.hidden = false;
@@ -291,7 +317,10 @@ function refreshSyncStatus() {
   }
 
   els.syncCloudPanel.hidden = true;
-  els.syncSubtitle.textContent = "Sign in for automatic sync, or use manual backup below.";
+  els.syncSubtitle.textContent = isCloudSyncConfigured()
+    ? "Sign in with Google to sync across your devices."
+    : "Set up free Google sync below, or use manual backup.";
+
   els.syncManualPanel.querySelector(".sync-actions")?.removeAttribute("hidden");
 
   const savedText = meta.updatedAt
@@ -302,11 +331,6 @@ function refreshSyncStatus() {
 }
 
 function updateAuthButton(user) {
-  if (!isCloudSyncAvailable()) {
-    els.authBtn.hidden = true;
-    return;
-  }
-
   els.authBtn.hidden = false;
 
   if (user) {
@@ -316,18 +340,38 @@ function updateAuthButton(user) {
   } else {
     els.authBtn.textContent = "Sign in";
     els.authBtn.classList.remove("signed-in");
-    els.authBtn.title = "Sign in with Google to sync across devices";
+    els.authBtn.title = isCloudSyncConfigured()
+      ? "Sign in with Google to sync across devices"
+      : "Set up Google sync";
   }
 }
 
+async function startCloudSync() {
+  setRemoteSyncCallback(notifyCloudPush);
+  await initCloudSync({
+    onRemoteUpdate: afterSyncApplied,
+    onAuthChange: (signedInUser) => {
+      updateAuthButton(signedInUser);
+      refreshSyncStatus();
+    },
+  });
+}
+
 async function handleAuthClick() {
+  if (!isCloudSyncConfigured()) {
+    openSyncModal();
+    return;
+  }
+
   try {
     if (getCurrentUser()) {
       await signOutUser();
       showSyncToast("Signed out.");
     } else {
       await signInWithGoogle();
-      showSyncToast("Signed in. Your data will sync automatically.");
+      if (getCurrentUser()) {
+        showSyncToast("Signed in. Your data will sync automatically.");
+      }
     }
   } catch (err) {
     showSyncToast(err.message, true);
@@ -340,6 +384,31 @@ function openSyncModal() {
   els.syncModal.classList.add("open");
   els.syncModal.setAttribute("aria-hidden", "false");
   document.body.style.overflow = "hidden";
+}
+
+async function handleFirebaseSave() {
+  try {
+    const config = parseFirebaseConfigInput(els.firebaseConfigInput.value);
+    saveFirebaseConfig(config);
+    resetFirebaseSession();
+    await startCloudSync();
+    updateAuthButton(getCurrentUser());
+    refreshSyncStatus();
+    showSyncToast("Firebase connected. Now sign in with Google.");
+  } catch (err) {
+    showSyncToast(err.message, true);
+  }
+}
+
+async function handleFirebaseSignIn() {
+  try {
+    await signInWithGoogle();
+    if (getCurrentUser()) {
+      showSyncToast("Signed in. Your data will sync automatically.");
+    }
+  } catch (err) {
+    showSyncToast(err.message, true);
+  }
 }
 
 function closeSyncModal() {
@@ -642,6 +711,8 @@ document.addEventListener("keydown", (event) => {
 els.syncOpen.addEventListener("click", openSyncModal);
 els.syncClose.addEventListener("click", closeSyncModal);
 els.authBtn.addEventListener("click", handleAuthClick);
+els.firebaseSave.addEventListener("click", handleFirebaseSave);
+els.firebaseSignin.addEventListener("click", handleFirebaseSignIn);
 
 els.syncModal.addEventListener("click", (event) => {
   if (event.target === els.syncModal) closeSyncModal();
@@ -706,20 +777,11 @@ els.search.addEventListener(
 async function init() {
   renderSkeleton();
   updateFavoritesCount();
+  updateAuthButton(null);
+  updateSyncSetupUI();
 
-  if (isCloudSyncAvailable()) {
-    setRemoteSyncCallback(notifyCloudPush);
-    await initCloudSync({
-      onRemoteUpdate: afterSyncApplied,
-      onAuthChange: (user) => {
-        updateAuthButton(user);
-        refreshSyncStatus();
-      },
-    });
-  } else {
-    els.authBtn.hidden = true;
-    els.syncSubtitle.textContent =
-      "Add Firebase config for automatic sign-in sync, or use manual backup below.";
+  if (isCloudSyncConfigured()) {
+    await startCloudSync();
   }
 
   try {

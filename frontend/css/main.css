@@ -844,6 +844,64 @@ a {
   max-width: 520px;
 }
 
+.sync-setup-panel {
+  margin-bottom: 1.25rem;
+  padding-bottom: 1.25rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.sync-setup-title {
+  margin: 0 0 0.35rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--accent);
+}
+
+.sync-setup-text {
+  margin: 0 0 0.75rem;
+  font-size: 0.82rem;
+  color: var(--text-secondary);
+  line-height: 1.45;
+}
+
+.sync-setup-steps {
+  margin-bottom: 0.85rem;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+.sync-setup-steps summary {
+  cursor: pointer;
+  color: var(--text-secondary);
+  margin-bottom: 0.5rem;
+}
+
+.sync-setup-steps ol {
+  margin: 0.5rem 0 0;
+  padding-left: 1.2rem;
+}
+
+.sync-setup-steps li {
+  margin-bottom: 0.35rem;
+}
+
+.sync-setup-steps code {
+  font-size: 0.75rem;
+  color: var(--accent);
+}
+
+.sync-setup-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.sync-setup-actions .sync-apply-btn {
+  width: auto;
+  flex: 1;
+  min-width: 180px;
+}
+
 .sync-cloud-panel {
   margin-bottom: 1rem;
   padding: 0.75rem 0.9rem;
